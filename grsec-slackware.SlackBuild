@@ -48,7 +48,7 @@ GDATE=${GDATE:-201610262029}
 # or just set them automatically
 if (whiptail --title "grsec/kernel versions" --yesno "Automatically set the correct versions for kernel and patch from grsecurity.net?" 8 55); then
     # get the rss feed
-    echo -e "${CYAN}Checking RSS feed${NC}\n"
+    echo -e "\n${CYAN}Checking RSS feed${NC}\n"
     wget -O rss "https://grsecurity.net/testing_rss.php"
     sleep 1
     # search for first hit of a grsec release (i.e. the latest)
@@ -87,9 +87,9 @@ if [ $NCPUS -eq 1 ]; then
     NJOBS=1
 else
     if (whiptail --title "Kernel compile" --yesno "Build speed (make -j):\n\nSet jobs equal to number of CPU cores? ('No' for half)" 10 55); then
-	NJOBS=$(nproc)
+        NJOBS=$(nproc)
     else
-	NJOBS=$((NCPUS / 2))
+        NJOBS=$((NCPUS / 2))
     fi
 fi
 
@@ -160,14 +160,17 @@ fi
 ## CHECK FOR KERNEL CONFIG
 if [ -a /boot/$CVERSION ]; then
     # use that
-    echo -e "${CYAN}Found kernel config in /boot${NC}"
+    echo -e "\n${CYAN}Found kernel config in /boot${NC}"
 elif [ -a $CVERSION ]; then
-    echo -e "${CYAN}Found kernel config in $CWD${NC}"
+    echo -e "\n${CYAN}Found kernel config in $CWD${NC}"
 else
-    echo -e "${RED}Couldn't find kernel config${NC}"
+    echo -e "\n${RED}Couldn't find kernel config${NC}"
     sleep 1
     whiptail --title "No kernel config" --msgbox "Couldn't find a kernel config file. You can continue without one, but you'll have to configure the entire kernel manually.\n\nEasier is to place a config file in the current directory and name it config-$KVERSION-grsec-$GVERSION" 12 55
 fi
+
+echo -e "\n${CYAN}Adding \"kernel\" public key from the PGP keyserver${NC}\n"
+gpg2 --keyserver hkp://keys.gnupg.net --recv-keys 38DBBDC86092693E
 
 ## CHECK SIGNATURES
 echo -e "\n[ Check signatures ]\n"
@@ -179,6 +182,16 @@ else
     echo -e "${RED}Bad signature. Exiting${NC}"
     exit 1
 fi
+
+echo -e "\n${CYAN}Downloading \"grsecurity\" public key from his site${NC}\n"
+wget https://grsecurity.net/spender-gpg-key.asc
+
+echo -e "\n${CYAN}Importing \"grsecurity\" public key${NC}\n"
+gpg --import spender-gpg-key.asc
+
+# delete grsecurity - not needed anymore
+rm spender-gpg-key.asc
+
 # grsec sig validity
 echo -e "\n${CYAN}Checking grsec signature${NC}"
 sleep 3
@@ -214,11 +227,11 @@ patch -p1 < $CWD/$GRELEASE.patch
 if [ -a /boot/$CVERSION ]; then
     # config in /boot
     cp -a /boot/$CVERSION $TMP/$KRELEASE/.config
-    echo -e "\n${CYAN}Copied /boot/$CVERSION\n${NC}"
+    echo -e "\n${CYAN}Copied /boot/$CVERSION to $TMP/$KRELEASE/.config\n${NC}"
 elif [ -a $CWD/$CVERSION ]; then
     # config in $CWD
     cp -a $CWD/$CVERSION $TMP/$KRELEASE/.config
-    echo -e "\n${CYAN}Copied $CWD/$CVERSION\n${NC}"
+    echo -e "\n${CYAN}Copied $CWD/$CVERSION to $TMP/$KRELEASE/.config\n${NC}"
 else
     # no config
     echo -e "\n${CYAN}No config${NC}"
@@ -235,12 +248,12 @@ make menuconfig
 LOOP=1
 until [ $LOOP -eq 0 ]; do
     if whiptail --title "Compile" --yesno "Ready to compile the kernel? (No to reconfigure)\n\n(Make sure you have set up 'Security Options -> Grsecurity' appropriately for your machine)" 10 60; then
-	# user selected "Yes" so exit loop
-	LOOP=0
+        # user selected "Yes" so exit loop
+        LOOP=0
     else
-	# stay in loop, make menuconfig again
-	echo -e "${CYAN}make menuconfig${NC}"
-	make menuconfig
+        # stay in loop, make menuconfig again
+        echo -e "${CYAN}make menuconfig${NC}"
+        make menuconfig
     fi
 done
 
