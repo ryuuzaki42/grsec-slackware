@@ -1,0 +1,29 @@
+paxctl -cm /usr/bin/ksmserver
+paxctl -cm /usr/bin/kwrapper4
+paxctl -cm /usr/bin/kdeinit4
+paxctl -cm /usr/bin/okular
+paxctl -cm /usr/bin/systemsettings
+paxctl -cm /usr/bin/kdm
+paxctl -cm /usr/bin/kwin
+paxctl -cm /usr/bin/kwrite
+paxctl -cm /usr/bin/xkbcomp
+paxctl -cm /usr/bin/qdbus
+
+paxctl -cm /sbin/hwclock
+
+paxctl -cPSmXEr /usr/lib/polkit-1/polkitd
+paxctl -cPSmXER /usr/libexec/upowerd
+
+paxctl -cm /usr/lib64/opera/opera
+
+paxctl -cm /usr/lib64/java/jre/bin/java
+paxctl -cm /usr/lib64/java/bin/java
+
+paxctl -cm /usr/lib64/firefox-45.4.0/firefox
+paxctl -cm /usr/lib64/firefox-45.4.0/plugin-container
+
+paxctl -cm /usr/lib64/libreoffice/program/soffice.bin
+
+paxctl -cm /usr/bin/sox
+
+paxctl -cm /usr/bin/python2.7

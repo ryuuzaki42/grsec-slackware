@@ -1,0 +1,1 @@
+mkinitrd -c -k 4.7.10-grsec -f ext4 -r /dev/sda3 -m usb-storage:ums-realtek:xhci-hcd:xhci-pci:ohci-pci:ehci-pci:uhci-hcd:ehci-hcd:hid:usbhid:i2c-hid:hid_generic:hid-cherry:hid-logitech:hid-logitech-dj:hid-logitech-hidpp:hid-lenovo:hid-microsoft:hid_multitouch:mbcache:jbd2:ext4 -u -o /boot/initrd-4.7.10-grsec-3.1.gz
